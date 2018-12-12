@@ -1,0 +1,38 @@
+#Given an input string (s) and a pattern (p), implement wildcard pattern matching with support for '?' and '*'.
+
+#'?' Matches any single character.
+#'*' Matches any sequence of characters (including the empty sequence).
+
+
+class Solution:
+    def isMatch(self, s, p):
+        """
+        :type s: str
+        :type p: str
+        :rtype: bool
+        """
+        
+        index_pattern, index_string = 0, 0
+        index_last_string, index_last_pattern = -1, -1
+        
+        while index_string < len(s):
+            if index_pattern < len(p) and (s[index_string] == p[index_pattern] or p[index_pattern] == '?'):
+                index_pattern = index_pattern + 1
+                index_string = index_string + 1
+                
+            elif index_pattern < len(p) and p[index_pattern] == '*':
+                index_pattern = index_pattern + 1
+                index_last_pattern = index_pattern
+                index_last_string = index_string
+                
+            elif index_last_pattern != -1:
+                index_last_string = index_last_string + 1
+                index_pattern = index_last_pattern
+                index_string = index_last_string
+                
+            else:
+                return False
+
+        while index_pattern < len(p) and p[index_pattern] == '*':
+            index_pattern = index_pattern + 1
+        return index_pattern == len(p)
