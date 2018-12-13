@@ -12,8 +12,10 @@ class Solution:
         :rtype: bool
         """
         
-        index_pattern, index_string = 0, 0
-        index_last_string, index_last_pattern = -1, -1
+        index_pattern = 0
+        index_string = 0
+        index_last_pattern = -1
+        index_last_string = -1
         
         while index_string < len(s):
             if index_pattern < len(p) and (s[index_string] == p[index_pattern] or p[index_pattern] == '?'):
