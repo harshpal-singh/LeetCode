@@ -1,0 +1,74 @@
+class Solution:
+    def findWords(self, board, words):
+        """
+        :type board: List[List[str]]
+        :type words: List[str]
+        :rtype: List[str]
+        """
+
+
+class TrieNode:
+    def __init__(self):
+        from collections import defaultdict
+        self.end = False
+        self.child = defaultdict(TrieNode)
+
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        current = self.root
+        for i in word:
+            current = current.child[i]
+        current.end = True
+
+    def search(self, word):
+        current = self.root
+        for i in word:
+            current = current.child.get(i)
+            if current is None:
+                return False
+        return current.end
+
+    def startsWith(self, prefix):
+        current = self.root
+        for i in prefix:
+            current = current.child.get(i)
+            if current is None:
+                return False
+        return True
+
+
+class Solution:
+    def f(self, board, word, i, j, visited, current, now, pos=0):
+        if current.end:
+            self.res.add(now)
+            #   return True
+        if i < 0 or i >= len(board) or j < 0 or j >= len(board[0]) or visited.get((i, j)):
+            return False
+        current = current.child.get(board[i][j])
+        if current != None:
+            visited[(i, j)] = True
+            now += board[i][j]
+            res = self.f(board, word, i, j + 1, visited, current, now, pos + 1) \
+                  | self.f(board, word, i, j - 1, visited, current, now, pos + 1) \
+                  | self.f(board, word, i + 1, j, visited, current, now, pos + 1) \
+                  | self.f(board, word, i - 1, j, visited, current, now, pos + 1)
+            visited[(i, j)] = False
+            return res
+        else:
+            return False
+
+    def findWords(self, board, words):
+        self.trie = Trie()
+        for i in words:
+            self.trie.insert(i)
+        visited = {}
+        self.res = set([])
+        for i in range(len(board)):
+            for j in range(len(board[0])):
+                #  print i,j,board[i][j]
+                self.f(board, words, i, j, visited, self.trie.root, '')
+        return list(self.res)
